@@ -1,0 +1,13 @@
+name: "Update Changelog"
+description: "Update changelog file when a pull request is raised"
+inputs:
+  token:
+    description: "GitHub token for authentication"
+    required: true
+  changeset_path:
+    description: "Path where the changeset files will be added"
+    # required: true
+    default: "changeset/fragments"
+runs:
+  using: "node16"
+  main: "index.js"
