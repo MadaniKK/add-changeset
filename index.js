@@ -45,6 +45,8 @@ async function run() {
     // Read input parameters
     const token = process.env.INPUT_TOKEN;
     const changesetPath = process.env.INPUT_CHANGESET_PATH;
+    console.log("TOKEN:", process.env.INPUT_TOKEN);
+    console.log("PATH:", process.env.INPUT_CHANGESET_PATH);
 
     // Set up Octokit with the provided token
     const octokit = github.getOctokit(token);
