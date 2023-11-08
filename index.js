@@ -118,6 +118,7 @@ async function run() {
     console.log("Changeset file added successfully.");
   } catch (error) {
     console.trace(`Error adding changeset: ${error}`);
+    console.error("Error response status:", error.response.status);
     console.error("Error response data:", error.response.data);
     process.exit(1);
   }
