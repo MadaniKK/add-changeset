@@ -69,6 +69,7 @@ async function run() {
     const entries = extractChangelogEntries(prDescription);
 
     console.log(`Found ${entries.length} changelog entries.`);
+    console.log(`Found changelog entries ${entries} `);
 
     // If there are no entries, add a new entry with the PR title
     if (entries.length === 0) {
