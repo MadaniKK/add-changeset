@@ -146,13 +146,18 @@ async function run() {
 
     const changesetFileName = `changeset-${pullRequestNumber}.yml`;
 
-    const response = await octokit.rest.repos.getContent({
-      owner,
-      repo,
-      path: `${changesetPath}/${changesetFileName}`,
-      branch: context.payload.pull_request.head.ref,
-    });
-    sha = response.data.sha;
+    try {
+      const response = await octokit.rest.repos.getContent({
+        owner,
+        repo,
+        path: `${changesetPath}/${changesetFileName}`,
+        branch: context.payload.pull_request.head.ref,
+      });
+      sha = response.data.sha;
+    } catch (error) {
+      console.trace(error);
+      console.log(error.status);
+    }
     console.log("SHA", sha);
 
     await octokit.rest.repos.createOrUpdateFileContents({
