@@ -144,16 +144,7 @@ async function run() {
       });
     }
     const changesetFileName = `changeset-${pullRequestNumber}.yml`;
-    // await octokit.rest.repos.createOrUpdateFileContents({
-    //   owner,
-    //   repo,
-    //   path: `${changesetPath}/${changesetFileName}`,
-    //   message: `Add changeset for PR #${pullRequestNumber}`,
-    //   content: Buffer.from(changesetContent).toString("base64"),
-    //   branch: context.payload.pull_request.head.ref,
-    // });
-    await createOrUpdateFile({
-      octokit,
+    await octokit.rest.repos.createOrUpdateFileContents({
       owner,
       repo,
       path: `${changesetPath}/${changesetFileName}`,
@@ -161,6 +152,15 @@ async function run() {
       content: Buffer.from(changesetContent).toString("base64"),
       branch: context.payload.pull_request.head.ref,
     });
+    // await createOrUpdateFile({
+    //   octokit,
+    //   owner,
+    //   repo,
+    //   path: `${changesetPath}/${changesetFileName}`,
+    //   message: `Add changeset for PR #${pullRequestNumber}`,
+    //   content: Buffer.from(changesetContent).toString("base64"),
+    //   branch: context.payload.pull_request.head.ref,
+    // });
 
     console.log("Changeset file added successfully.");
   } catch (error) {
