@@ -145,7 +145,7 @@ async function run() {
     }
 
     const changesetFileName = `changeset-${pullRequestNumber}.yml`;
-
+    let sha;
     try {
       const response = await octokit.rest.repos.getContent({
         owner,
@@ -166,6 +166,7 @@ async function run() {
       path: `${changesetPath}/${changesetFileName}`,
       message: `Add changeset for PR #${pullRequestNumber}`,
       content: Buffer.from(changesetContent).toString("base64"),
+      sha,
       branch: context.payload.pull_request.head.ref,
     });
 
