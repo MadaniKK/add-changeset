@@ -143,7 +143,18 @@ async function run() {
         branch,
       });
     }
+
     const changesetFileName = `changeset-${pullRequestNumber}.yml`;
+
+    const response = await octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path: `${changesetPath}/${changesetFileName}`,
+      branch: context.payload.pull_request.head.ref,
+    });
+    sha = response.data.sha;
+    console.log("SHA", sha);
+
     await octokit.rest.repos.createOrUpdateFileContents({
       owner,
       repo,
@@ -152,6 +163,7 @@ async function run() {
       content: Buffer.from(changesetContent).toString("base64"),
       branch: context.payload.pull_request.head.ref,
     });
+
     // await createOrUpdateFile({
     //   octokit,
     //   owner,
