@@ -69,7 +69,6 @@ async function run() {
     const entries = extractChangelogEntries(prDescription);
 
     console.log(`Found ${entries.length} changelog entries.`);
-    console.log(`Found changelog entries ${entries} `);
 
     // If there are no entries, add a new entry with the PR title
     if (entries.length === 0) {
@@ -105,6 +104,7 @@ async function run() {
       .join("\n\n");
 
     // Add the changeset file to the repo
+
     async function createOrUpdateFile(
       octokit,
       owner,
@@ -113,7 +113,9 @@ async function run() {
       content,
       message,
       branch
+      // pullRequestNumber
     ) {
+      let sha;
       try {
         const response = await octokit.rest.repos.getContent({
           owner,
@@ -123,27 +125,33 @@ async function run() {
         });
         sha = response.data.sha;
       } catch (error) {
-        if (error.status !== 404) {
+        if (error.status === 404) {
           // File does not exist
-          console.trace(error);
-          throw error;
+          console.log("File not found, will create a new one.");
+        } else {
+          // Other errors
+          console.log("other error:", error);
         }
       }
-      // Create or update the file content
       await octokit.rest.repos.createOrUpdateFileContents({
-        owner: owner,
-        repo: repo,
-        path: path,
+        owner,
+        repo,
+        path,
         message: message,
         content: content,
-        sha: sha, // This will be undefined if the file doesn't exist
-        branch: branch,
+        sha, // This will be undefined if the file doesn't exist
+        branch,
       });
-
-      console.log(`File ${sha ? "updated" : "created"} successfully.`);
     }
-
     const changesetFileName = `changeset-${pullRequestNumber}.yml`;
+    // await octokit.rest.repos.createOrUpdateFileContents({
+    //   owner,
+    //   repo,
+    //   path: `${changesetPath}/${changesetFileName}`,
+    //   message: `Add changeset for PR #${pullRequestNumber}`,
+    //   content: Buffer.from(changesetContent).toString("base64"),
+    //   branch: context.payload.pull_request.head.ref,
+    // });
     await createOrUpdateFile({
       octokit,
       owner,
@@ -153,11 +161,10 @@ async function run() {
       content: Buffer.from(changesetContent).toString("base64"),
       branch: context.payload.pull_request.head.ref,
     });
-    // console.log("Changeset file added successfully.");
+
+    console.log("Changeset file added successfully.");
   } catch (error) {
     console.trace(`Error adding changeset: ${error}`);
-    // console.error("Error response status:", error.response);
-    // console.error("Error response data:", error.response.data);
     process.exit(1);
   }
 }
