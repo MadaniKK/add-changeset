@@ -127,10 +127,13 @@ async function run() {
       } catch (error) {
         if (error.status === 404) {
           // File does not exist
-          console.log("File not found, will create a new one.");
+          console.log(
+            "changeset for this PR not found, will create a new one."
+          );
         } else {
           // Other errors
           console.log("other error:", error);
+          throw error;
         }
       }
       await octokit.rest.repos.createOrUpdateFileContents({
@@ -142,34 +145,10 @@ async function run() {
         sha, // This will be undefined if the file doesn't exist
         branch,
       });
-      console.log(`File ${sha ? "updated" : "created"} successfully.`);
+      console.log(`File: ${path} ${sha ? "updated" : "created"} successfully.`);
     }
 
     const changesetFileName = `changeset-${pullRequestNumber}.yml`;
-    // let sha;
-    // try {
-    //   const response = await octokit.rest.repos.getContent({
-    //     owner,
-    //     repo,
-    //     path: `${changesetPath}/${changesetFileName}`,
-    //     ref: context.payload.pull_request.head.ref,
-    //   });
-    //   sha = response.data.sha;
-    // } catch (error) {
-    //   console.trace(error);
-    //   console.log(error.status);
-    // }
-    // console.log("SHA", sha);
-
-    // await octokit.rest.repos.createOrUpdateFileContents({
-    //   owner,
-    //   repo,
-    //   path: `${changesetPath}/${changesetFileName}`,
-    //   message: `Add changeset for PR #${pullRequestNumber}`,
-    //   content: Buffer.from(changesetContent).toString("base64"),
-    //   sha,
-    //   branch: context.payload.pull_request.head.ref,
-    // });
 
     await createOrUpdateFile(
       octokit,
