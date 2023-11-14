@@ -151,7 +151,7 @@ async function run() {
         owner,
         repo,
         path: `${changesetPath}/${changesetFileName}`,
-        branch: context.payload.pull_request.head.ref,
+        ref: context.payload.pull_request.head.ref,
       });
       sha = response.data.sha;
     } catch (error) {
