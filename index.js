@@ -171,15 +171,15 @@ async function run() {
     //   branch: context.payload.pull_request.head.ref,
     // });
 
-    await createOrUpdateFile({
+    await createOrUpdateFile(
       octokit,
       owner,
       repo,
-      path: `${changesetPath}/${changesetFileName}`,
-      message: `Add changeset for PR #${pullRequestNumber}`,
-      content: Buffer.from(changesetContent).toString("base64"),
-      branch: context.payload.pull_request.head.ref,
-    });
+      `${changesetPath}/${changesetFileName}`,
+      Buffer.from(changesetContent).toString("base64"),
+      `Add changeset for PR #${pullRequestNumber}`,
+      context.payload.pull_request.head.ref
+    );
 
     // console.log("Changeset file added successfully.");
   } catch (error) {
