@@ -6,7 +6,7 @@ const PREFIXES = [
   "feat",
   "fix",
   "perf",
-  "docs",
+  "doc",
   "refactor",
   "test",
   "build",
